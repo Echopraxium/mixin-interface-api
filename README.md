@@ -2,8 +2,8 @@
 
 A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-* Release 0.0.6:  
-Refactoring of `mixin-interface` package to separate the _core API_ (now moved here, in `mixin-interface-api`) from the _Utility features_ (like _Custom Logger_ and other features provided by `MxI.$System`) asw well as future extensions which will now be provided by [`mixin-interface`](https://www.npmjs.com/package/mixin-interface) package
+* Release 0.0.7:  
+Refactoring of [`mixin-interface`](https://www.npmjs.com/package/mixin-interface) package to separate the _core API_ (now moved here, in `mixin-interface-api`) from the _Utility features_ (like _Custom Logger_ and other features provided by `MxI.$System`) asw well as future extensions which will now be provided by `mixin-interface` package
 
 ## Installation and Usage
 ```bash
