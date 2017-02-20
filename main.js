@@ -11,4 +11,4 @@
 'use strict';
 /*jshint node: true*/
 /*jshint esversion: 6*/
-exports.dummy_mixin_interface_api_main = function(){};
+exports.dummy_mixin_interface_api_main = function() {};
