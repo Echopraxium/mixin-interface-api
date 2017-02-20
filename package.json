@@ -1,0 +1,31 @@
+{
+  "name": "mixin-interface-api",
+  "version": "0.0.1",
+  "description": "Lightweight interface class API (Javascript es6)",
+  "main": "main.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Echopraxium/mixin-interface-api.git"
+  },
+  "keywords": [
+    "mixin",
+    "interface class",
+	"implementation class",
+    "implements",
+    "service",
+    "javascript es6"
+  ],
+  "author": "Michel Kern",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Echopraxium/mixin-interface-api/issues"
+  },
+  "homepage": "https://github.com/Echopraxium/mixin-interface-api#readme",
+  "dependencies": {
+    "caller-id": "^0.1.0",
+    "mixin": "^0.2.0"
+  }
+}
