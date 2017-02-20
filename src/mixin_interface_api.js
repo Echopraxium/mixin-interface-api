@@ -10,8 +10,9 @@
 const mixin       = require('mixin');
 const caller_id   = require('caller-id');
 
-const SERVICE_NOT_IMPLEMENTED_ERROR_ID     = 100;
-const SUPER_INTERFACE_NOT_DEFINED_ERROR_ID = 101;
+const SERVICE_NOT_IMPLEMENTED_ERROR_ID          = 100;
+const SUPER_INTERFACE_NOT_DEFINED_ERROR_ID      = 101;
+const SUPER_IMPLEMENTATION_NOT_DEFINED_ERROR_ID = 102;
 
 
 //------------------- $raiseNotImplementedError() -------------------
@@ -21,7 +22,7 @@ const $raiseNotImplementedError = function(arg_interface, instance) {
         }
 
         var caller_data = caller_id.getData();
-        var error_msg   = "** mixin-interface Error " + SERVICE_NOT_IMPLEMENTED_ERROR_ID + " ** " +
+        var error_msg   = "** mixin-interface-api Error " + SERVICE_NOT_IMPLEMENTED_ERROR_ID + " ** " +
                           arg_interface.name + "." + caller_data.functionName +
                           " not found on " + instance.name + "\n";
 
@@ -34,6 +35,13 @@ const $raiseNotImplementedError = function(arg_interface, instance) {
 //=================================================================
 class $MixinInterface {
   constructor(arg_type) {
+	  if (arg_type === undefined) {
+		var error_msg   = "** mixin-interface-api Error " + SUPER_IMPLEMENTATION_NOT_DEFINED_ERROR_ID + " ** " +
+                          "Parent Implementation class is '" + arg_type + "'\n";
+
+        throw new Error(error_msg); 
+	  }
+
       this._$super_implementation = arg_type;
   } // '$MixinInterface' constructor
 
@@ -41,7 +49,7 @@ class $MixinInterface {
       var implemented_interfaces = Array.from(arg_interfaces);
       if (implemented_interfaces.length === 0)
         return this._$super_implementation;
-
+		  
       var mixed = this._$super_implementation;
 
       if (this._$super_implementation._$implemented_interfaces === undefined)
