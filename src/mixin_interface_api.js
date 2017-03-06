@@ -21,8 +21,9 @@ const SINGLETON_PRIVATE_CONSTRUCTOR_ERROR_ID    = 'SINGLETON_PRIVATE_CONSTRUCTOR
 
 //------------------- throwErrorMessage() -------------------
 const throwErrorMessage = function(arg_error_msg, error_code) {
-	var error_msg = "** mixin-interface-api Error " + error_code + " **\n" +
-	                "   " + arg_error_msg + "\n";
+	var error_msg = "** mixin-interface-api **\n" + 
+	                "   Error code:  " + error_code + "\n" +
+	                "   Description: " + arg_error_msg + "\n";
     throw new Error(error_msg);
 } // throwErrorMessage()
 
@@ -34,8 +35,8 @@ const $raiseNotImplementedError = function(arg_interface, instance) {
         }
 
         var caller_data = caller_id.getData();
-        var error_msg   = arg_interface.name + "." + caller_data.functionName +
-                          " not found on " + instance.name;
+        var error_msg   = "'" + arg_interface.name + "." + caller_data.functionName + "'" +
+                          " not found on '" + instance.name + "'";
 
         throwErrorMessage(error_msg, SERVICE_NOT_IMPLEMENTED_ERROR_ID);
 } // $raiseNotImplementedError()

@@ -13,7 +13,7 @@ A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It i
 
 * Usability changes 1/3 (new services): `$implements()`, `$isNull()`, `$getSuperclass()`, `$setAsSingleton()`, `$isSingleton()`
 * Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null)` instead of `console.log(MxI.$Null.name)`)
-* Usability changes 3/3: More readable Error messages (e.g. when `new()` is called on a _Singleton_ class)
+* Usability changes 3/3: More readable Error messages. See new output in _Error Handling: 'service not implemented'_ paragraph
 
 ## Installation and Usage
 ```bash
@@ -362,7 +362,7 @@ This code means:
 ***
 ## Error Handling: 'service not implemented'
 ```javascript
-MxI.$raiseNotImplementedError(_interface_, object)
+MxI.$raiseNotImplementedError(_interface_, this)
 ```
 This service provides _Error Handling_ when a service of an _interface class_ is not provided by an _implementation class_. It should be used in the _Fallback implementation_ for each service defined by the _interface class_.
 Here is an example of how to use this API service (see [`./src/test_classes/i_life_form.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/src/test_classes/i_life_form.js):
@@ -379,14 +379,19 @@ MxI.$setAsInterface(ILifeForm).$asChildOf(MxI.$IBaseInterface);
 Let's see what happens if the `Animal` _implementation_ doesn't provide an implementation for the `run()` service §defined by `IAnimal` _interface class_). 
 If you want to test this use case, just rename `run()` to `__run()` in [`./src/test_classes/animal.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/src/test_classes/animal.js) ), then restart the Unit Test with `node test.js` in the command shell. An exception should be raised an you would get the following output:
 ```bash
-            throw new Error(error_msg);
-            ^
+    throw new Error(error_msg);
+    ^
 
-Error: ** mixin-interface Error 100 ** IAnimal.run not found on Animal_0
+Error: ** mixin-interface-api **
+   Error code:  SERVICE_NOT_IMPLEMENTED
+   Description: 'IAnimal.run' not found on 'animal_0'
+
+    at throwErrorMessage (D:\001_Lab\000_KL_Lab\_git_pub\mixin-interface-api\src
+\mixin_interface_api.js:27:11)
     at Object.$raiseNotImplementedError (D:\001_Lab\000_KL_Lab\_git_pub\mixin-in
-terface-api\src\mixin_interface_api.js:160:19)
-    at Animal.run (D:\001_Lab\000_KL_Lab\_git_pub\mixin-interface-api\src\test_class
-es\i_animal.js:16:9)
+terface-api\src\mixin_interface_api.js:41:9)
+    at Animal.run (D:\001_Lab\000_KL_Lab\_git_pub\mixin-interface-api\src\test_c
+lasses\i_animal.js:16:9)
 ...
 ```
 
