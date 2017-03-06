@@ -10,9 +10,21 @@
 const mixin       = require('mixin');
 const caller_id   = require('caller-id');
 
-const SERVICE_NOT_IMPLEMENTED_ERROR_ID          = 100;
-const SUPER_INTERFACE_NOT_DEFINED_ERROR_ID      = 101;
-const SUPER_IMPLEMENTATION_NOT_DEFINED_ERROR_ID = 102;
+const MXI_NULL                                  = 'MxI.NULL';
+
+const SERVICE_NOT_IMPLEMENTED_ERROR_ID          = 'SERVICE_NOT_IMPLEMENTED';
+const SUPER_INTERFACE_NOT_DEFINED_ERROR_ID      = 'SUPER_INTERFACE_NOT_DEFINED';
+const SUPER_IMPLEMENTATION_NOT_DEFINED_ERROR_ID = 'SUPER_IMPLEMENTATION_NOT_DEFINED';
+const SINGLETON_ALREADY_INSTANCIATED_ERROR_ID   = 'SINGLETON_ALREADY_INSTANCIATED';
+const SINGLETON_PRIVATE_CONSTRUCTOR_ERROR_ID    = 'SINGLETON_PRIVATE_CONSTRUCTOR';
+
+
+//------------------- throwErrorMessage() -------------------
+const throwErrorMessage = function(arg_error_msg, error_code) {
+	var error_msg = "** mixin-interface-api Error " + error_code + " **\n" +
+	                "   " + arg_error_msg + "\n";
+    throw new Error(error_msg);
+} // throwErrorMessage()
 
 
 //------------------- $raiseNotImplementedError() -------------------
@@ -22,24 +34,21 @@ const $raiseNotImplementedError = function(arg_interface, instance) {
         }
 
         var caller_data = caller_id.getData();
-        var error_msg   = "** mixin-interface-api Error " + SERVICE_NOT_IMPLEMENTED_ERROR_ID + " ** " +
-                          arg_interface.name + "." + caller_data.functionName +
-                          " not found on " + instance.name + "\n";
+        var error_msg   = arg_interface.name + "." + caller_data.functionName +
+                          " not found on " + instance.name;
 
-        throw new Error(error_msg);
+        throwErrorMessage(error_msg, SERVICE_NOT_IMPLEMENTED_ERROR_ID);
 } // $raiseNotImplementedError()
 
 
-//=================================================================
-//==================== '$MixinInterface' class ====================
-//=================================================================
+//=============================================================================
+//=========================  '$MixinInterface' class  =========================
+//=============================================================================
 class $MixinInterface {
   constructor(arg_type) {
-	  if (arg_type === undefined) {
-		var error_msg   = "** mixin-interface-api Error " + SUPER_IMPLEMENTATION_NOT_DEFINED_ERROR_ID + " ** " +
-                          "Parent Implementation class is '" + arg_type + "'\n";
-
-        throw new Error(error_msg); 
+	  if (arg_type === undefined) {	
+		var error_msg   = "   Parent Implementation class is '" + arg_type;
+        throwErrorMessage(error_msg, SUPER_IMPLEMENTATION_NOT_DEFINED_ERROR_ID);
 	  }
 
       this._$super_implementation = arg_type;
@@ -67,47 +76,47 @@ class $MixinInterface {
 } // '$MixinInterface' class
 
 
-//====================================================================
-//==================== '$MixinSetInterface' class ====================
-//====================================================================
+//================================================================================
+//=========================  '$MixinSetInterface' class  =========================
+//================================================================================
 class $MixinSetInterface {
-  constructor(arg_type) {
-      this._$arg_type = arg_type;
+    constructor(arg_type) {
+        this._$arg_type = arg_type;
     } // '$MixinSetInterface' constructor
 
-  $asChildOf(arg_super_type) {
-      var arg_type = this._$arg_type;
-      if (arg_type === undefined || arg_super_type === undefined) {
-          return;
-      }
-      arg_type._$is_interface    = true;
-      arg_type._$super_interface = arg_super_type;
-  } // $asChildOf
+    $asChildOf(arg_super_type) {
+        var arg_type = this._$arg_type;
+        if (arg_type === undefined || arg_super_type === undefined) {
+            return;
+        }
+        arg_type._$is_interface    = true;
+        arg_type._$super_interface = arg_super_type;
+    } // $asChildOf()
 } // '$MixinSetInterface' class
 
 
-//======================================================================
-//==================== '$MixinImplementation' class ====================
-//======================================================================
+//==============================================================================
+//=======================  '$MixinImplementation' class  =======================
+//==============================================================================
 class $MixinImplementation {
-  constructor(arg_type) {
-      this._$arg_type = arg_type;
-  } // '$MixinImplementation' constructor
+    constructor(arg_type) {
+        this._$arg_type = arg_type;
+    } // '$MixinImplementation' constructor
 
-  $asImplementationOf(...arg_interfaces) {
-      var arg_type = this._$arg_type;
-      if (arg_type === undefined)
-          return;
+    $asImplementationOf(...arg_interfaces) {
+        var arg_type = this._$arg_type;
+        if (arg_type === undefined)
+            return;
 
-      var interfaces                    = Array.from(arg_interfaces);
-      arg_type._$implemented_interfaces = interfaces;
-      arg_type._$is_interface           = false;
-  } // $asImplementationOf
+        var interfaces                    = Array.from(arg_interfaces);
+        arg_type._$implemented_interfaces = interfaces;
+        arg_type._$is_interface           = false;
+    } // $asImplementationOf()
 } // '$MixinImplementation' class
 
 
 //===========================================================================
-//==================== '$IBaseInterface' interface class ====================
+//===================  '$IBaseInterface' interface class  ===================
 //===========================================================================
 class $IBaseInterface {
 } // '$IBaseInterface' interface class
@@ -115,17 +124,21 @@ $IBaseInterface._$is_interface = true;
 exports.$IBaseInterface = $IBaseInterface;
 
 
-//=====================================================================
-//================ '$Object' Base Implementation class ================
-//=====================================================================
-class $Object {
+//========================================================================
+//==================  '$Object' implementation class  ====================
+//========================================================================
+class $Object {	 
   constructor(...args) {
-      this._$name        = this.generateInstanceName();
-      this._$args        = args;
-	  this._$initialized = false;
-	  this._$args_init   = [];
+    this._$name        = this.generateInstanceName();
+    this._$args        = args;
+	this._$initialized = false;
+	this._$args_init   = [];
   } // '$Object' constructor
   
+  toString() {
+    return this._$name;
+  } // toString() override 
+
   init(...args_init) {
 	  if (this._$initialized===true) 
 		return;
@@ -144,22 +157,22 @@ class $Object {
     //console.log("class_name: " + class_name);
     var count = 0;
 
-    if ($Object._InstanceCount === undefined)
-      $Object._InstanceCount = {};
+    if ($Object._$instanceCount === undefined)
+      $Object._$instanceCount = {};
 
-    if ($Object._InstanceCount[class_name] === undefined)
-      $Object._InstanceCount[class_name] = 0;
+    if ($Object._$instanceCount[class_name] === undefined)
+      $Object._$instanceCount[class_name] = 0;
     else
-      count = $Object._InstanceCount[class_name];
+      count = $Object._$instanceCount[class_name];
 
-    $Object._InstanceCount[class_name] = count;
+    $Object._$instanceCount[class_name] = count;
 
     var preformatted_class_name = class_name.replace('.', '_').replace('$', 'mxi');
 	var snake_case_class_name   = preformatted_class_name.replace
 	                              (/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
     var name = snake_case_class_name + '_' + count;
 
-    $Object._InstanceCount[class_name]++;
+    $Object._$instanceCount[class_name]++;
     return name;
   } // generateInstanceName()
 
@@ -168,39 +181,39 @@ class $Object {
       this._$name = this.generateInstanceName();
     return this._$name;
   } // get name()
-} // '$Object' class
-$Object._$is_interface = false;
+} // '$Object' implementation class
+$Object._$instanceCount = {};
+$Object._$singletons    = {};
+$Object._$is_interface  = false;
 exports.$Object = $Object;
-//================ '$Object' Base Implementation class
 
 
 //------------------- $Interface() -------------------
 const $Interface = function(arg_super_type) {
-       return mixin($Object, arg_super_type);
+    return mixin($Object, arg_super_type);
 } // $Interface()
 
 
 //------------------- $setAsInterface() -------------------
 const $setAsInterface = function(arg_type) {
-      if (arg_type === undefined)
+    if (arg_type === undefined)
           return;
-      arg_type._$is_interface    = true;
-      arg_type._$super_interface = $IBaseInterface;
-      return new $MixinSetInterface(arg_type);
+    arg_type._$is_interface    = true;
+    arg_type._$super_interface = $IBaseInterface;
+    return new $MixinSetInterface(arg_type);
 } // $setAsInterface()
-
 
 //------------------- $Implementation() -------------------
 const $Implementation = function(arg_super_implementation) {
-       return new $MixinInterface(arg_super_implementation);
+    return new $MixinInterface(arg_super_implementation);
 } // $Implementation()
 
 
 //------------------- $setClass() -------------------
 const $setClass = function(arg_type) {
-        if (arg_type === undefined)
-              return;
-        return new $MixinImplementation(arg_type);
+    if (arg_type === undefined)
+        return;
+    return new $MixinImplementation(arg_type);
 } // $setClass()
 
 
@@ -214,66 +227,262 @@ const getClass = function (instance) {
 } // getClass()
 
 
+//------------------- $implements() -------------------
+const $implements = function(arg_type, arg_interface) {
+    if (arg_type === undefined || arg_type === null)
+		return false;
+	
+    var implemented_interface;
+    if (arg_type._$implemented_interfaces !== undefined) {
+        // Check if interface class is in _$implemented_interfaces
+        for (var i=0; i < arg_type._$implemented_interfaces.length; i++) {
+			implemented_interface = arg_type._$implemented_interfaces[i];
+			//console.log(">> implemented_interface: " + implemented_interface.name);
+            if (implemented_interface === arg_interface) {
+                return true;
+		    }
+            else {
+                var parent_interface = implemented_interface._$super_interface;
+                while (parent_interface !== undefined) {
+                    if (parent_interface === arg_interface)
+                        return true;
+                    parent_interface = parent_interface._$super_interface;
+                    //console.log(">> parent_interface  " + parent_interface.name);
+                } // while (parent_interface != undefined)
+            } // if (implemented_interface === arg_type)
+        } // for (var i=0; i<instance_type._$implemented_interfaces.length; i++)		
+	} // if (arg_type._$implemented_interfaces !== undefined)
+		
+    return false;
+} // $implements
+
+				  
+ //------------------- $isInstanceOf() -------------------
+ const $isInstanceOf = function(arg_type, instance) {
+	  if (arg_type === undefined || arg_type === null)
+		return false;
+		  
+      var instance_type = getClass(instance);
+
+      if ( instance instanceof arg_type) {
+          // Check if instance 'isinstanceof' an implementation class
+          return true;
+      }
+      else {
+          // Check if instance 'isinstanceof' an interface class
+          var implemented_interface;
+          if (   instance_type !== undefined 
+		      && instance_type._$implemented_interfaces !== undefined) {
+              // Check if interface class is in _$implemented_interfaces
+              for (var i=0; i < instance_type._$implemented_interfaces.length; i++) {
+				  implemented_interface = instance_type._$implemented_interfaces[i];
+                  if (implemented_interface === arg_type) {
+                      return true;
+				  }
+                  else {
+                      var parent_interface = implemented_interface._$super_interface;
+                      while (parent_interface !== undefined) {
+                          if (parent_interface === arg_type)
+                              return true;
+                          parent_interface = parent_interface._$super_interface;
+                          //console.log(">> parent_interface  " + parent_interface.name);
+                      } // while (parent_interface != undefined)
+                  } // if (implemented_interface === arg_type)
+              } // for (var i=0; i<instance_type._$implemented_interfaces.length; i++)
+          } // if (instance_type._$implemented_interfaces !== undefined)
+      } // if (instance instanceof arg_type)
+
+      return false;
+} // $isInstanceOf()
+
+
+//======================================================================
+//==================  '$INullObject' interface class  ==================
+//======================================================================
+class $INullObject extends $Interface($IBaseInterface) {  
+} // '$INullObject' interface class
+$setAsInterface($INullObject).$asChildOf($IBaseInterface);
+
+
+//======================================================================
+//===================  '$ISingleton' interface class  ==================
+//======================================================================
+class $ISingleton extends $Interface($IBaseInterface) {  
+    // Fallback implementation of 'isSingleton' service
+    isSingleton() {
+	    MxI.$raiseNotImplementedError($ISingleton, this);
+    } // '$ISingleton'.isSingleton()
+} // '$ISingleton' interface class
+$setAsInterface($ISingleton).$asChildOf($IBaseInterface);
+
+
+//------------------- $setAsSingleton() -------------------
+const $setAsSingleton = function(arg_type, ...args) {
+	//console.log(" >> $setAsSingleton 0 arg_type:" + arg_type.name);
+	var klass = arg_type;
+    if (klass === undefined || klass === null) {
+	  //console.log(" >> $setAsSingleton 1 klass:", klass.name);
+	  return;
+    }
+	
+    if ($implements(klass, $ISingleton)) {    
+	  //console.log(" >> $setAsSingleton 2 '%s' ", klass.name);
+	  klass._$singleton                   = undefined;
+	  $Object._$singletons[klass.name]    = "";
+	}
+} // $setAsSingleton()
+
+
+//==========================================================================
+//===================  '$Singleton' implementation class  ==================
+//==========================================================================
+class $Singleton extends $Implementation($Object).$with($ISingleton) { 
+    constructor(...args) {
+		super();
+		
+		var klass = this.constructor;
+		//console.log(" >> Trying to call new ..." + klass.name);
+		//console.log(" >> object count " + $Object._$instanceCount[klass.name]);
+		if ($Object._$singletons[klass.name] !== klass.name) {    
+	        var error_msg = "'" + klass.name + "' is a Singleton class, then its constructor is private";
+            throwErrorMessage(error_msg, SINGLETON_PRIVATE_CONSTRUCTOR_ERROR_ID);
+	    }
+						  
+		if ($Object._$instanceCount[klass.name] > 1) {
+			var error_msg   = "'" + klass.name + "' already instanciated";
+            throwErrorMessage(error_msg, SINGLETON_ALREADY_INSTANCIATED_ERROR_ID);
+		}
+    } // '$Singleton' constructor
+	
+	toString() {
+        return this._$name;
+    } // toString() override 
+	
+    isSingleton() {
+	    return ($Object._$instanceCount[klass.name] <= 1);
+    } // $ISingleton.isSingleton()
+	
+    static getSingleton(...args) {
+	    var klass = this;
+	    //console.log(klass.name + ".getSingleton " + klass._$singleton);
+		//console.log("Class: " + this.name);
+	    if (klass._$singleton === undefined) {
+			$Object._$singletons[klass.name]    = klass.name;
+		    klass._$singleton                   = new klass(...args);
+			$Object._$singletons[klass.name]    = "";
+	    }
+	    return klass._$singleton;
+    } // $Singleton.getSingleton()
+} // '$Singleton' implementation class
+$setClass($Singleton).$asImplementationOf($ISingleton);
+$setAsSingleton($Singleton);
+
+
+//===============================================================================
+//=====================  '$NullObject' implementation class  ====================
+//===============================================================================
+class $NullObject extends $Implementation($Singleton).$with($ISingleton, $INullObject) { 
+    constructor(...args) {
+	    super();
+        this._$name = MXI_NULL;
+		//console.log(">>> $Nothing constructor: " + this.name);
+    } // '$NullObject' constructor
+} // '$NullObject' implementation class
+$setClass($NullObject).$asImplementationOf($INullObject, $ISingleton);
+$setAsSingleton($NullObject);
+
+const theNullObject = $NullObject.getSingleton();
+
+
+//------------------- $getSuperclass() -------------------
+const $getSuperclass = function (arg_type) {
+    if (arg_type === null || arg_type === undefined) {
+		return theNullObject;
+	}
+
+    if (arg_type._$is_interface === undefined) {
+	    return theNullObject;
+    }
+
+    if (arg_type._$is_interface === true) {
+        if (arg_type._$super_interface !== undefined) {
+            return arg_type._$super_interface;
+        }
+    }
+	else {
+		var super_class = Object.getPrototypeOf(arg_type);
+        return super_class;
+	}
+    return theNullObject;
+} // $getSuperclass()
+
+
 //---------- $isInterface ----------
 const $isInterface = function(arg_type) {
         if ( arg_type                === undefined ||
-             arg_type._$is_interface === undefined) {
-           return false;
+            arg_type._$is_interface === undefined) {
+            return false;
         }
 
         if (arg_type._$is_interface === true)
             return true;
 
         return false;
-} // $isInterface
+} // $isInterface()
 
 
- //------------------- $isInstanceOf() -------------------
- const $isInstanceOf = function(type, instance) {
-      //console.log("---- isInstanceOf " + type.name + " ? instance: " + instance);
-      var instance_type = getClass(instance);
+//------------------- $isSingleton() -------------------
+const $isSingleton = function(obj) {
+	    var rc = false;
+        if (obj !== undefined && obj !== null)
+            rc = $isInstanceOf($ISingleton, obj);
+        return rc;
+} // $isSingleton()
 
-      if ( instance instanceof type)
-          // Check if instance 'isinstanceof' an implementation class
-          return true;
-      else {
-          // Check if instance 'isinstanceof' an interface class
-          var implemented_interface;
-          if (instance_type._$implemented_interfaces !== undefined) {
-              // Check if interface class is in _$implemented_interfaces
-              for (var i=0; i<instance_type._$implemented_interfaces.length; i++) {
-                  implemented_interface = instance_type._$implemented_interfaces[i];
-                  if (implemented_interface === type)
-                      return true;
-                  else {
-                      var parent_interface = implemented_interface._$super_interface;
-                      while (parent_interface !== undefined) {
-                          if (parent_interface === type)
-                              return true;
-                          parent_interface = parent_interface._$super_interface;
-                          //console.log(">> parent_interface  " + parent_interface.name);
-                      } // while (parent_interface != undefined)
-                  } // if (implemented_interface === type)
-              } // for (var i=0; i<instance_type._$implemented_interfaces.length; i++)
-          } // if (instance_type._$implemented_interfaces !== undefined)
-      } // if (instance instanceof type)
 
-      return false;
-} // $isInstanceOf()
+//------------------- $isNull () -------------------
+const $isNull = function(obj) {
+	    var rc = false;
+		if (obj === undefined || obj === null)
+			rc = true;
+        else if (obj === $NullObject.getSingleton())
+			rc = true;
+		else if ($implements(obj, $INullObject))
+			rc = true;
+        return rc;
+} // $isNull
 
 
 //=================================================================================
 //================================ 'MxI' Namespace ================================
 //=================================================================================
 const MxI = {
-    '$Object':                   $Object,
-    '$IBaseInterface':           $IBaseInterface,
+	'$Object':                   $Object,                      // Implementation class
+    '$IBaseInterface':           $IBaseInterface,              // Interface class
+		
+	'$ISingleton':               $ISingleton,                  // Interface class
+	'$Singleton':                $Singleton,                   // Implementation class
+		
+    '$INullObject':              $INullObject,                 // Interface class
+	'$NullObject':               $NullObject,                  // Implementation class
+	'$Null':                     theNullObject,                // 'Null Object' Singleton
+	
 	'$Interface':                $Interface,
 	'$setAsInterface':           $setAsInterface,
-    '$Implementation':           $Implementation,
-    '$setClass':                 $setClass,
-	'$isInstanceOf':             $isInstanceOf,
-    '$isInterface':              $isInterface,
+	'$isInterface':              $isInterface,
 	'$raiseNotImplementedError': $raiseNotImplementedError,
+	
+	'$Implementation':           $Implementation,
+	'$setClass':                 $setClass,
+	'$implements':               $implements,
+	'$getSuperclass':            $getSuperclass,
+	
+	'$isInstanceOf':             $isInstanceOf,
+	'$isNull':                   $isNull,
+	
+	'$isSingleton':              $isSingleton,
+	'$setAsSingleton':           $setAsSingleton
 }; // MxI namespace
 exports.MxI = MxI;
+
+//var sing_2 = new $Nothing();

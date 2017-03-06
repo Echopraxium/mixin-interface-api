@@ -11,7 +11,7 @@ const IAnimal = require('./i_animal.js').IAnimal;
 
 //==================== 'IMammal' interface class ====================
 class IMammal extends MxI.$Interface(IAnimal) {
-  // Fallback implementation of 'suckle' service
+  // Fallback implementation of 'suckle()' service
   suckle() {
     MxI.$raiseNotImplementedError(IMammal, this);
   } // IMammal.suckle()

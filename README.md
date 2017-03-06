@@ -2,8 +2,18 @@
 
 A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-* Release 0.0.7:  
-Refactoring of [`mixin-interface`](https://www.npmjs.com/package/mixin-interface) package to separate the _core API_ (now moved here, in `mixin-interface-api`) from the _Utility features_ (like _Custom Logger_ and other features provided by `MxI.$System`) asw well as future extensions which will now be provided by `mixin-interface` package
+### Changelog in release 0.1.0 (Refactoring Step 2/2): 
+* Major change 1/2 (_Singleton_ feature): a _Singleton class_ may only have a single unique instance. This feature also brings the benefit to provide the _Singleton_ design pattern in [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)  
+
+ >Notice that a _Singleton_ prohibits direct use of `new()` (which generates an Error). When client code needs to instanciate / retrieve an instance of a _Singleton class_ it must call the `getSingleton()` static method (e.g. `MxI.$NullObject.getSingleton()`)  
+ 
+* Major change 2/2 (_Null Object_ feature): an special object which replaces the clumsy and low absraction `undefined` value by an object which has the same semantic but can be logged and even called as a 'Dummy implementation of an Interface'. To see more on that feature please refer to the _Null Object_ design pattern in [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)  
+
+ >Notice that _Null Object_ is also a _Singleton_  
+
+* Usability changes 1/3 (new services): `$implements()`, `$isNull()`, `$getSuperclass()`, `$setAsSingleton()`, `$isSingleton()`
+* Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null)` instead of `console.log(MxI.$Null).name`)
+* Usability changes 3/3: More readable Error messages (e.g. when `new()` is called on a _Singleton_ class)
 
 ## Installation and Usage
 ```bash
@@ -34,11 +44,11 @@ You should get the following output:
 ======== Unit Test for 'mixin-interface-api' package ========
 =============================================================
 1.Instance of 'Animal' created: animal_0
-'animal_0' is a 'MxI.$Object' ?      true
-'animal_0' is a 'ILifeForm' ?        true
-'animal_0' is a 'Animal' ?           true
-'animal_0' is a 'IAnimal' ?          true
-'animal_0' is a 'IMammal' ?          false
+'animal_0' is a 'MxI.$Object' ?    true
+'animal_0' is a 'ILifeForm' ?      true
+'animal_0' is a 'IAnimal' ?        true
+'animal_0' is a 'Animal' ?         true
+'animal_0' is a 'IMammal' ?        false
 --> Animal.run
 --> Animal.live
 ----------
@@ -54,22 +64,46 @@ You should get the following output:
 --> Animal.live
 ----------
 3. Check for each type if it is an Interface class or an Implementation class
-'MxI.$Object'         is an interface ? false
-'MxI.$IBaseInterface' is an interface ? true
-'ILifeForm'           is an interface ? true
-'IAnimal'             is an interface ? true
-'Animal'              is an interface ? false
-'Cat'                 is an interface ? false
-'IMammal'             is an interface ? true
+'MxI.$Object'        is an interface ? false
+'MxI.IBaseInterface' is an interface ? true
+'ILifeForm'          is an interface ? true
+'IAnimal'            is an interface ? true
+'Animal'             is an interface ? false
+'Cat'                is an interface ? false
+'IMammal'            is an interface ? true
 ----------
-4. Check generated names for instances
-Instance of 'MxI.$Object' created:        'mxi_object_0'
-Another instance of 'Animal' created:     'animal_1'
-Another instance of 'Cat' created:        'cat_1'
+4. Check if an Implementation class implements a given Interface
+'Animal'              implements 'ILifeForm' ?        true
+'Animal'              implements 'IAnimal' ?          true
+'Animal'              implements 'IMammal' ?          false
+'Cat'                 implements 'IAnimal' ?          true
+'Cat'                 implements 'IMammal' ?          true
+'MxI.$NullObject'     implements 'MxI.$INullObject' ? true
+'MxI.$NullObject'     implements 'MxI.$ISingleton' ?  true
 ----------
-5. Initialize instance
-animal_1 isInitialized():       false
-animal_1 isInitialized():       true
+5. get Superclass of a type
+Superclass of 'Animal' is:              $Object
+Superclass of 'IAnimal' is:             ILifeForm
+Superclass of 'Cat' is:                 Animal
+----------
+6. Check generated names for instances
+Instance of 'MxI.$Object' created:      'mxi_object_0'
+Another instance of 'Animal' created:   'animal_1'
+Another instance of 'Cat' created:      'cat_1'
+----------
+7. Initialize instance
+animal_1 isInitialized():               false
+animal_1 isInitialized():               true
+----------
+8. 'Null Object' design pattern, check if an instance is 'MxI.NULL'
+MxI.$isNull(undefined):                 true
+MxI.$isNull(animal_1):                  false
+MxI.$isNull(MxI.NULL):                  true
+MxI.$NullObject.getSingleton():         MxI.NULL
+----------
+9. Singleton
+isSingleton(MxI.NULL):                  true
+'MxI.NULL' is a 'MxI.$ISingleton' ?     true
 ======== End of Unit Test ========
 ```
 
@@ -209,29 +243,41 @@ Please note the following keywords and their meaning:
   
 > **API service**: _function provided by 'mixin-interface'_ (e.g. `Mxi.$isInstanceOf()`)  
 > **MxI**: _namespace_ for all the _mixin-interface_ API services  
-> **object**: for _instance of an _implementation class_   
-> **service**: for _function defined by an interface class_ (e.g. `IAnimal.run()`)   
-> **type**: for either an _implementation class_ (e.g. `Animal`) or an _interface class_ (e.g. `IAnimal`)    
-> **interface**: for _interface class_  
-> **super_interface**: for _superclass of the interface class_  
-> **implementation**: for _implementation class_  
-> **super_implementation**: for _superclass of the implementation class_   
+> **object**: _instance of an _implementation class_   
+> **service**: _function defined by an interface class_ (e.g. `IAnimal.run()`)   
+> **type**: either an _implementation class_ (e.g. `Animal`) or an _interface class_ (e.g. `IAnimal`)    
+> **interface**: _interface class_  
+> **super_interface**: _superclass of the interface class_  
+> **implementation**: _implementation class_  
+> **super_implementation**: _superclass of the implementation class_   
 > **...interfaces**: _list of implemented interfaces_. The list is provided as _interface class(es)_ separated by a comma (e.g. `ILifeForm` and `IAnimal, ILifeForm` are valid _...interfaces_ arguments)  
 
-* **MxI.$isInstanceOf()**: replacement for javascript `instanceof` operator.  
-* **MxI.$isInterface()**: checks if a _type_ is an _interface class_ or not.  
+* **MxI.$isInstanceOf()**: replacement for javascript `instanceof` operator  
+* **MxI.$isInterface()**: checks if a _type_ is an _interface class_ or not  
+* **MxI.$implements()**: checks if a _type_ implements an _interface class_ or not  
+* **MxI.$getSuperclass()**: get the superclass of a a _type    
 
-* **MxI.$Interface()**: defines an _interface class_ and its _super_interface_.  
-* **MxI.$setAsInterface().$asChildOf()**: defines that a class is an _interface class_ and its _super_implementation_.  
- >This is syntactically redundant but nevertheless required in order that `MxI.$isInstanceOf()` works correctly.  
+* **MxI.$Interface()**: defines an _interface class_ and its _super_interface_   
+* **MxI.$setAsInterface().$asChildOf()**: defines that a class is an _interface class_ and its _super_implementation_  
+ >This is syntactically redundant but nevertheless required in order that `MxI.$isInstanceOf()` works correctly    
 
-* **MxI.$Implementation().$with()**: defines an _implementation class_ and its superclass (`Mxi.$Object` if no other class applies).  
-* **MxI.$setClass().$asImplementationOf()**: defines  the _interface class(es)_ implemented by an _implementation class_.  
+* **MxI.$Implementation().$with()**: defines an _implementation class_ and its superclass (`Mxi.$Object` if no other class applies)    
+* **MxI.$setClass().$asImplementationOf()**: defines  the _interface class(es)_ implemented by an _implementation class_  
 
 * **MxI.$raiseNotImplementedError()**: error handling when a service (defined by of an _interface class_) is not implemented  
 
-* **MxI.$Object().init()**: _Delayed Initialization_ feature  
-* **MxI.$Object().isInitialized()**: checks if an object has been initialized  
+* **MxI.$Object.init()**: _Delayed Initialization_ feature  
+* **MxI.$Object.isInitialized()**: checks if an object has been initialized  
+
+* **MxI.$ISingleton**: _interface class_ for the _Singleton_ (i.e. Unique instance) design pattern (see [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)
+* **MxI.$Singleton**: Default _implementation_ for `MxI.$ISingleton` _interface_  
+* **MxI.$isSingleton()**: Checks if an object is a _Singleton_  
+* **MxI.$setAsSingleton()**: Require to define that an _implementation_ is a _Singleton_  
+
+* **MxI.$INullObject**: _interface class_ for the _Null Object_ design pattern (see [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)
+* **MxI.$NullObject**: Default _implementation_ for `MxI.$INullObject` _interface_  
+* **MxI.$Null**: Singleton of `MxI.$NullObject` 
+* **MxI.$isNull()**: Checks if an object is `MxI.$Null` (NB: it also returns `true` if the input value is `undefined`)
  
 ***
 ## Check if an object is an instance of a Type
@@ -255,6 +301,18 @@ This service checks if  `type` is an _interface class_ (see [`./test.js`](https:
 
 ```javascript
 console.log("'IAnimal' is an interface ? " + MxI.$isInterface(IAnimal));
+```
+
+***
+## Check if a _type_ implements an _interface class_  
+```javascript
+MxI.$implements(implementation, interface)
+```
+
+***
+## Get the superclass of a _type_  
+```javascript
+MxI.$getSuperclass(type)
 ```
 
 ***
@@ -344,6 +402,48 @@ These services provide the _Delayed Initialization_ feature.
 
 >Short explanation on _Delayed Initialization_: a typical example in _GUI programming_ is when you need a widget (e.g. _PushButton_) but its container (e.g. _CommandBar_) is not yet created or known at instanciation time, so you may use later  `init()` service so that the PushButton can set its container (e.g. by calling setContainer() in the _PushButton_'s implementation of init() service).
 
+***
+## 'Singleton' Design Pattern
+```javascript
+MxI.$ISingleton
+MxI.$Singleton
+MxI.$isSingleton(object) 
+MxI.$setAsSingleton(type)
+```
+
+Please find below a code sample from [`./test_.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/test.js) which uses `MxI.$isSingleton()`:
+```javascript
+console.log("isSingleton(%s):  %s", MxI.$Null, MxI.$isSingleton(MxI.$Null));
+```
+
+Please find below a code sample from [`./src/mixin_interface_api.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/src/mixin_interface_api.js) which uses `MxI.$setAsSingleton()`:
+```javascript
+class $NullObject extends $Implementation($Singleton).$with($ISingleton, $INullObject) { 
+    constructor(...args) {
+	    super();
+        this._$name = MXI_NULL;
+    } // '$NullObject' constructor
+} // '$NullObject' implementation class
+$setClass($NullObject).$asImplementationOf($INullObject, $ISingleton);
+$setAsSingleton($NullObject);
+
+const theNullObject = $NullObject.getSingleton();
+```
+
+***
+## 'Null Object' Design Pattern
+```javascript
+MxI.$INullObject
+MxI.$NullObject
+MxI.$Null
+MxI.$isNull()
+```
+
+Please find below a code sample which uses `MxI.$isNull()`
+```javascript
+console.log("MxI.$isNull(%s):  %s", undefined, MxI.$isNull(undefined));
+console.log("MxI.$isNull(%s):   %s", MxI.$Null, MxI.$isNull(MxI.$Null));
+```
 
 ## References
 * _A fresh look at JavaScript Mixins_  

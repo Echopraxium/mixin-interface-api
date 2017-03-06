@@ -10,7 +10,7 @@ const MxI = require('../mixin_interface_api.js').MxI;
 
 //==================== 'ILifeForm' interface class ====================
 class ILifeForm extends MxI.$Interface(MxI.$IBaseInterface) {  
-  // Fallback implementation of 'live' service
+  // Fallback implementation of 'live()' service
   live() {
     MxI.$raiseNotImplementedError(ILifeForm, this);
   } // ILifeForm.live()
