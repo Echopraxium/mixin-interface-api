@@ -73,9 +73,10 @@ console.log("'MxI.$NullObject'     implements 'MxI.$ISingleton' ?  " + MxI.$impl
 console.log("----------");
 unit_test_step++;
 console.log(unit_test_step + ". get Superclass of a type");
-console.log("Superclass of 'Animal' is:              " + MxI.$getSuperclass(Animal).name);
-console.log("Superclass of 'IAnimal' is:             " + MxI.$getSuperclass(IAnimal).name);
-console.log("Superclass of 'Cat' is:                 " + MxI.$getSuperclass(Cat).name);
+console.log("Superclass of 'ILifeForm' is:             " + MxI.$getSuperclass(ILifeForm).name);
+console.log("Superclass of 'Animal' is:                " + MxI.$getSuperclass(Animal).name);
+console.log("Superclass of 'IAnimal' is:               " + MxI.$getSuperclass(IAnimal).name);
+console.log("Superclass of 'Cat' is:                   " + MxI.$getSuperclass(Cat).name);
 
 console.log("----------");
 unit_test_step++;

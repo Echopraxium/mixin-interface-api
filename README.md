@@ -12,7 +12,7 @@ A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It i
  >Notice that _Null Object_ is also a _Singleton_  
 
 * Usability changes 1/3 (new services): `$implements()`, `$isNull()`, `$getSuperclass()`, `$setAsSingleton()`, `$isSingleton()`
-* Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null)` instead of `console.log(MxI.$Null).name`)
+* Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null);` instead of `console.log(MxI.$Null.name);`)
 * Usability changes 3/3: More readable Error messages (e.g. when `new()` is called on a _Singleton_ class)
 
 ## Installation and Usage
@@ -82,9 +82,10 @@ You should get the following output:
 'MxI.$NullObject'     implements 'MxI.$ISingleton' ?  true
 ----------
 5. get Superclass of a type
-Superclass of 'Animal' is:              $Object
-Superclass of 'IAnimal' is:             ILifeForm
-Superclass of 'Cat' is:                 Animal
+Superclass of 'ILifeForm' is:             $IBaseInterface
+Superclass of 'Animal' is:                $Object
+Superclass of 'IAnimal' is:               ILifeForm
+Superclass of 'Cat' is:                   Animal
 ----------
 6. Check generated names for instances
 Instance of 'MxI.$Object' created:      'mxi_object_0'
