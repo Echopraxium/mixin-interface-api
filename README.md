@@ -12,7 +12,7 @@ A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It i
  >Notice that _Null Object_ is also a _Singleton_  
 
 * Usability changes 1/3 (new services): `$implements()`, `$isNull()`, `$getSuperclass()`, `$setAsSingleton()`, `$isSingleton()`
-* Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null);` instead of `console.log(MxI.$Null.name);`)
+* Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null)` instead of `console.log(MxI.$Null.name)`)
 * Usability changes 3/3: More readable Error messages (e.g. when `new()` is called on a _Singleton_ class)
 
 ## Installation and Usage
@@ -88,23 +88,23 @@ Superclass of 'IAnimal' is:               ILifeForm
 Superclass of 'Cat' is:                   Animal
 ----------
 6. Check generated names for instances
-Instance of 'MxI.$Object' created:      'mxi_object_0'
-Another instance of 'Animal' created:   'animal_1'
-Another instance of 'Cat' created:      'cat_1'
+Instance of 'MxI.$Object' created:        'mxi_object_0'
+Another instance of 'Animal' created:     'animal_1'
+Another instance of 'Cat' created:        'cat_1'
 ----------
 7. Initialize instance
-animal_1 isInitialized():               false
-animal_1 isInitialized():               true
+animal_1 isInitialized():                 false
+animal_1 isInitialized():                 true
 ----------
 8. 'Null Object' design pattern, check if an instance is 'MxI.NULL'
-MxI.$isNull(undefined):                 true
-MxI.$isNull(animal_1):                  false
-MxI.$isNull(MxI.NULL):                  true
-MxI.$NullObject.getSingleton():         MxI.NULL
+MxI.$isNull(undefined):                   true
+MxI.$isNull(animal_1):                    false
+MxI.$isNull(MxI.NULL):                    true
+MxI.$NullObject.getSingleton():           MxI.NULL
 ----------
 9. Singleton
-isSingleton(MxI.NULL):                  true
-'MxI.NULL' is a 'MxI.$ISingleton' ?     true
+isSingleton(MxI.NULL):                    true
+'MxI.NULL' is a 'MxI.$ISingleton' ?       true
 ======== End of Unit Test ========
 ```
 
@@ -270,15 +270,15 @@ Please note the following keywords and their meaning:
 * **MxI.$Object.init()**: _Delayed Initialization_ feature  
 * **MxI.$Object.isInitialized()**: checks if an object has been initialized  
 
-* **MxI.$ISingleton**: _interface class_ for the _Singleton_ (i.e. Unique instance) design pattern (see [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)
+* **MxI.$ISingleton**: _interface class_ for the _Singleton_ (i.e. Unique instance) design pattern (see [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api))
 * **MxI.$Singleton**: Default _implementation_ for `MxI.$ISingleton` _interface_  
 * **MxI.$isSingleton()**: Checks if an object is a _Singleton_  
-* **MxI.$setAsSingleton()**: Require to define that an _implementation_ is a _Singleton_  
+* **MxI.$setAsSingleton()**: Required to define that an _implementation_ is a _Singleton_  
 
-* **MxI.$INullObject**: _interface class_ for the _Null Object_ design pattern (see [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)
+* **MxI.$INullObject**: _interface class_ for the _Null Object_ design pattern (see [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api))
 * **MxI.$NullObject**: Default _implementation_ for `MxI.$INullObject` _interface_  
 * **MxI.$Null**: Singleton of `MxI.$NullObject` 
-* **MxI.$isNull()**: Checks if an object is `MxI.$Null` (NB: it also returns `true` if the input value is `undefined`)
+* **MxI.$isNull()**: Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
  
 ***
 ## Check if an object is an instance of a Type
@@ -305,7 +305,7 @@ console.log("'IAnimal' is an interface ? " + MxI.$isInterface(IAnimal));
 ```
 
 ***
-## Check if a _type_ implements an _interface class_  
+## Check if an _implementation_ implements an _interface class_  
 ```javascript
 MxI.$implements(implementation, interface)
 ```
@@ -404,12 +404,12 @@ These services provide the _Delayed Initialization_ feature.
 >Short explanation on _Delayed Initialization_: a typical example in _GUI programming_ is when you need a widget (e.g. _PushButton_) but its container (e.g. _CommandBar_) is not yet created or known at instanciation time, so you may use later  `init()` service so that the PushButton can set its container (e.g. by calling setContainer() in the _PushButton_'s implementation of init() service).
 
 ***
-## 'Singleton' Design Pattern
+## 'Singleton' feature
 ```javascript
 MxI.$ISingleton
 MxI.$Singleton
 MxI.$isSingleton(object) 
-MxI.$setAsSingleton(type)
+MxI.$setAsSingleton(implementation)
 ```
 
 Please find below a code sample from [`./test_.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/test.js) which uses `MxI.$isSingleton()`:
@@ -427,24 +427,35 @@ class $NullObject extends $Implementation($Singleton).$with($ISingleton, $INullO
 } // '$NullObject' implementation class
 $setClass($NullObject).$asImplementationOf($INullObject, $ISingleton);
 $setAsSingleton($NullObject);
-
-const theNullObject = $NullObject.getSingleton();
 ```
 
 ***
-## 'Null Object' Design Pattern
+## 'Null Object' feature
 ```javascript
 MxI.$INullObject
 MxI.$NullObject
 MxI.$Null
-MxI.$isNull()
+MxI.$isNull(object)
 ```
 
-Please find below a code sample which uses `MxI.$isNull()`
+Example: a default implementation of `MxI.$INullObject` _interface_
 ```javascript
-console.log("MxI.$isNull(%s):  %s", undefined, MxI.$isNull(undefined));
+class $NullObject extends $Implementation($Singleton).$with($ISingleton, $INullObject) { 
+    constructor(...args) {
+	    super();
+        this._$name = MXI_NULL;
+    } // '$NullObject' constructor
+} // '$NullObject' implementation class
+$setClass($NullObject).$asImplementationOf($INullObject, $ISingleton);
+$setAsSingleton($NullObject);
+```
+
+Please find below a code sample which both logs `MxI.$Null` singleton and calls `MxI.$isNull()`
+```javascript
 console.log("MxI.$isNull(%s):   %s", MxI.$Null, MxI.$isNull(MxI.$Null));
 ```
+
+> `MxI.$isNull()` Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
 
 ## References
 * _A fresh look at JavaScript Mixins_  

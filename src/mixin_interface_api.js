@@ -445,9 +445,9 @@ const $isNull = function(obj) {
 	    var rc = false;
 		if (obj === undefined || obj === null)
 			rc = true;
-        else if (obj === $NullObject.getSingleton())
-			rc = true;
-		else if ($implements(obj, $INullObject))
+        //else if (obj === $NullObject.getSingleton())
+		//	rc = true;
+		else if ($isInstanceOf($INullObject, obj) && $isInstanceOf($ISingleton, obj))
 			rc = true;
         return rc;
 } // $isNull

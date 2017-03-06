@@ -82,34 +82,34 @@ console.log("----------");
 unit_test_step++;
 console.log(unit_test_step + ". Check generated names for instances");
 var an_object = new MxI.$Object();
-console.log("Instance of 'MxI.$Object' created:      '%s'", an_object);
+console.log("Instance of 'MxI.$Object' created:        '%s'", an_object);
 
 var another_animal = new Animal();
-console.log("Another instance of 'Animal' created:   '%s'", another_animal);
+console.log("Another instance of 'Animal' created:     '%s'", another_animal);
 
 var another_cat = new Cat();
-console.log("Another instance of 'Cat' created:      '%s'", another_cat);
+console.log("Another instance of 'Cat' created:        '%s'", another_cat);
 
 console.log("----------");
 unit_test_step++;
 console.log(unit_test_step + ". Initialize instance");
-console.log(another_animal.name + " isInitialized():              ", another_animal.isInitialized());
+console.log(another_animal.name + " isInitialized():                ", another_animal.isInitialized());
 another_animal.init();
-console.log(another_animal.name + " isInitialized():              ", another_animal.isInitialized());
+console.log(another_animal.name + " isInitialized():                ", another_animal.isInitialized());
 
 console.log("----------");
 unit_test_step++;
 console.log(unit_test_step + ". 'Null Object' design pattern, check if an instance is '%s'",MxI.$Null);
-console.log("MxI.$isNull(%s):                 %s", undefined, MxI.$isNull(undefined));
-console.log("MxI.$isNull(%s):                  %s", another_animal, MxI.$isNull(another_animal));
-console.log("MxI.$isNull(%s):                  %s", MxI.$Null, MxI.$isNull(MxI.$Null));
-console.log("MxI.$NullObject.getSingleton():         %s", MxI.$NullObject.getSingleton());
+console.log("MxI.$isNull(%s):                   %s", undefined, MxI.$isNull(undefined));
+console.log("MxI.$isNull(%s):                    %s", another_animal, MxI.$isNull(another_animal));
+console.log("MxI.$isNull(%s):                    %s", MxI.$Null, MxI.$isNull(MxI.$Null));
+console.log("MxI.$NullObject.getSingleton():           %s", MxI.$NullObject.getSingleton());
 
 console.log("----------");
 unit_test_step++;
 console.log(unit_test_step + ". Singleton");
-console.log("isSingleton(%s):                  %s", MxI.$Null, MxI.$isSingleton(MxI.$Null));
-console.log("'%s' is a 'MxI.$ISingleton' ?     " + MxI.$isInstanceOf(MxI.$ISingleton, MxI.$Null), MxI.$Null);
+console.log("isSingleton(%s):                    %s", MxI.$Null, MxI.$isSingleton(MxI.$Null));
+console.log("'%s' is a 'MxI.$ISingleton' ?       " + MxI.$isInstanceOf(MxI.$ISingleton, MxI.$Null), MxI.$Null);
 
 console.log("======== End of Unit Test ========");
 console.log();
