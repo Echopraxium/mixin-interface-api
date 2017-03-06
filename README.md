@@ -28,7 +28,7 @@ Install [_NodeJS_](https://nodejs.org/en/) and [_Git_](https://git-scm.com/)
 Open a command shell then enter the following commands:
 ```bash
 git clone git://github.com/Echopraxium/mixin-interface-api
-cd mixin-interface
+cd mixin-interface-api
 npm update
 ```
 
