@@ -2,116 +2,14 @@
 
 A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-### Changelog in release 0.1.0 (Refactoring Step 2/2): 
-* Major change 1/2 (_Singleton_ feature): a _Singleton class_ may only have a single unique instance. This feature also brings the benefit to provide the _Singleton_ design pattern in [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)  
-
- >Notice that a _Singleton_ prohibits direct use of `new()` (which generates an Error). When client code needs to instanciate / retrieve an instance of a _Singleton class_ it must call the `getSingleton()` static method (e.g. `MxI.$NullObject.getSingleton()`)  
- 
-* Major change 2/2 (_Null Object_ feature): an special object which replaces the clumsy and low absraction `undefined` value by an object which has the same semantic but can be logged and even called as a 'Dummy implementation of an Interface'. To see more on that feature please refer to the _Null Object_ design pattern in [`design-patterns-api`](https://www.npmjs.com/package/design-patterns-api)  
-
- >Notice that _Null Object_ is also a _Singleton_  
-
-* Usability changes 1/3 (new services): `$implements()`, `$isNull()`, `$getSuperclass()`, `$setAsSingleton()`, `$isSingleton()`
-* Usability changes 2/3: $Object.toString() override, this allow easier log of an object (i.e. `console.log(MxI.$Null)` instead of `console.log(MxI.$Null.name)`)
-* Usability changes 3/3: More readable Error messages. See new output in _Error Handling: 'service not implemented'_ paragraph
-
-## Installation and Usage
-```bash
-npm install mixin-interface-api -S
-```
-
-## How to run the Unit Test
-#### Step 1: Install Prerequisite Tools
-Install [_NodeJS_](https://nodejs.org/en/) and [_Git_](https://git-scm.com/)
-
-#### Step 2: Clone the 'mixin-interface-api' repository locally
-Open a command shell then enter the following commands:
-```bash
-git clone git://github.com/Echopraxium/mixin-interface-api
-cd mixin-interface-api
-npm update
-```
-
-#### Step 3: Run the Unit Test
-Now enter the following command:
-```bash
-node test.js
-```
-
-You should get the following output:
-```bash
-=============================================================
-======== Unit Test for 'mixin-interface-api' package ========
-=============================================================
-1.Instance of 'Animal' created: animal_0
-'animal_0' is a 'MxI.$Object' ?    true
-'animal_0' is a 'ILifeForm' ?      true
-'animal_0' is a 'IAnimal' ?        true
-'animal_0' is a 'Animal' ?         true
-'animal_0' is a 'IMammal' ?        false
---> Animal.run
---> Animal.live
-----------
-2. Instance of 'Cat' created: cat_0
-'cat_0' is a 'MxI.$Object' ? true
-'cat_0' is a 'Animal' ?      true
-'cat_0' is a 'Cat' ?         true
-'cat_0' is a 'ILifeForm' ?   true
-'cat_0' is a 'IAnimal' ?     true
-'cat_0' is a 'IMammal' ?     true
---> Animal.run
---> Cat.suckle
---> Animal.live
-----------
-3. Check for each type if it is an Interface class or an Implementation class
-'MxI.$Object'        is an interface ? false
-'MxI.IBaseInterface' is an interface ? true
-'ILifeForm'          is an interface ? true
-'IAnimal'            is an interface ? true
-'Animal'             is an interface ? false
-'Cat'                is an interface ? false
-'IMammal'            is an interface ? true
-----------
-4. Check if an Implementation class implements a given Interface
-'Animal'              implements 'ILifeForm' ?        true
-'Animal'              implements 'IAnimal' ?          true
-'Animal'              implements 'IMammal' ?          false
-'Cat'                 implements 'IAnimal' ?          true
-'Cat'                 implements 'IMammal' ?          true
-'MxI.$NullObject'     implements 'MxI.$INullObject' ? true
-'MxI.$NullObject'     implements 'MxI.$ISingleton' ?  true
-----------
-5. get Superclass of a type
-Superclass of 'ILifeForm' is:             $IBaseInterface
-Superclass of 'Animal' is:                $Object
-Superclass of 'IAnimal' is:               ILifeForm
-Superclass of 'Cat' is:                   Animal
-----------
-6. Check generated names for instances
-Instance of 'MxI.$Object' created:        'mxi_object_0'
-Another instance of 'Animal' created:     'animal_1'
-Another instance of 'Cat' created:        'cat_1'
-----------
-7. Initialize instance
-animal_1 isInitialized():                 false
-animal_1 isInitialized():                 true
-----------
-8. 'Null Object' design pattern, check if an instance is 'MxI.NULL'
-MxI.$isNull(undefined):                   true
-MxI.$isNull(animal_1):                    false
-MxI.$isNull(MxI.NULL):                    true
-MxI.$NullObject.getSingleton():           MxI.NULL
-----------
-9. Singleton
-isSingleton(MxI.NULL):                    true
-'MxI.NULL' is a 'MxI.$ISingleton' ?       true
-======== End of Unit Test ========
-```
-
->Please notice in the previous output that an _implementation class_ may _inherit_ functions (i.e implementation of services from _interface classes_) from its parent class (e.g. `FlyingFish` inherits `IAnimal.run()` and `IAnimal.live()` from `Animal`) but it is also possible to _override_ these default implementations them as well.
+### Changelog in release 0.1.6 
+* Documentation upgrade 1/2: UML model diagram for the implementation sample
+* Documentation upgrade 2/2: Paragraphs reordering ( _Sample UML Model_, "howtos" i.e _How to Define an Interface class_ and _Core API Reference_ are now before _Installation and Usage_ and _How to run the Unit Test_)
 
 ## Sample UML Model
 ![alt text](img/sample_1.png "Sample UML Model")
+
+Please find below the explanations with wich you may implement this model with the Core API privided by `mixin-interface-api`
 
 ## How to Define an Interface class
 Here is an example of an _interface class_ (see [`./src/test_classes/i_life_form.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/src/test_classes/i_life_form.js). Here we define a single service: `live()`
@@ -241,7 +139,7 @@ MxI.$setClass(Cat).$asImplementationOf(IMammal);
 >Notice that `IAnimal.run()` and `ILifeForm.live()` services are not provided, so they are inherited from the parent _implementation class_ (`Animal`).
 
 - - - -
-# mixin-interface-api Developer's Reference
+# Core API Reference
 
 Please note the following keywords and their meaning: 
   
@@ -464,6 +362,102 @@ console.log("MxI.$isNull(%s):   %s", MxI.$Null, MxI.$isNull(MxI.$Null));
 ```
 
 > `MxI.$isNull()` Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
+
+
+## Installation and Usage
+```bash
+npm install mixin-interface-api -S
+```
+
+## How to run the Unit Test
+#### Step 1: Install Prerequisite Tools
+Install [_NodeJS_](https://nodejs.org/en/) and [_Git_](https://git-scm.com/)
+
+#### Step 2: Clone the 'mixin-interface-api' repository locally
+Open a command shell then enter the following commands:
+```bash
+git clone git://github.com/Echopraxium/mixin-interface-api
+cd mixin-interface-api
+npm update
+```
+
+#### Step 3: Run the Unit Test
+Now enter the following command:
+```bash
+node test.js
+```
+
+You should get the following output:
+```bash
+=============================================================
+======== Unit Test for 'mixin-interface-api' package ========
+=============================================================
+1.Instance of 'Animal' created: animal_0
+'animal_0' is a 'MxI.$Object' ?    true
+'animal_0' is a 'ILifeForm' ?      true
+'animal_0' is a 'IAnimal' ?        true
+'animal_0' is a 'Animal' ?         true
+'animal_0' is a 'IMammal' ?        false
+--> Animal.run
+--> Animal.live
+----------
+2. Instance of 'Cat' created: cat_0
+'cat_0' is a 'MxI.$Object' ? true
+'cat_0' is a 'Animal' ?      true
+'cat_0' is a 'Cat' ?         true
+'cat_0' is a 'ILifeForm' ?   true
+'cat_0' is a 'IAnimal' ?     true
+'cat_0' is a 'IMammal' ?     true
+--> Animal.run
+--> Cat.suckle
+--> Animal.live
+----------
+3. Check for each type if it is an Interface class or an Implementation class
+'MxI.$Object'        is an interface ? false
+'MxI.IBaseInterface' is an interface ? true
+'ILifeForm'          is an interface ? true
+'IAnimal'            is an interface ? true
+'Animal'             is an interface ? false
+'Cat'                is an interface ? false
+'IMammal'            is an interface ? true
+----------
+4. Check if an Implementation class implements a given Interface
+'Animal'              implements 'ILifeForm' ?        true
+'Animal'              implements 'IAnimal' ?          true
+'Animal'              implements 'IMammal' ?          false
+'Cat'                 implements 'IAnimal' ?          true
+'Cat'                 implements 'IMammal' ?          true
+'MxI.$NullObject'     implements 'MxI.$INullObject' ? true
+'MxI.$NullObject'     implements 'MxI.$ISingleton' ?  true
+----------
+5. get Superclass of a type
+Superclass of 'ILifeForm' is:             $IBaseInterface
+Superclass of 'Animal' is:                $Object
+Superclass of 'IAnimal' is:               ILifeForm
+Superclass of 'Cat' is:                   Animal
+----------
+6. Check generated names for instances
+Instance of 'MxI.$Object' created:        'mxi_object_0'
+Another instance of 'Animal' created:     'animal_1'
+Another instance of 'Cat' created:        'cat_1'
+----------
+7. Initialize instance
+animal_1 isInitialized():                 false
+animal_1 isInitialized():                 true
+----------
+8. 'Null Object' design pattern, check if an instance is 'MxI.NULL'
+MxI.$isNull(undefined):                   true
+MxI.$isNull(animal_1):                    false
+MxI.$isNull(MxI.NULL):                    true
+MxI.$NullObject.getSingleton():           MxI.NULL
+----------
+9. Singleton
+isSingleton(MxI.NULL):                    true
+'MxI.NULL' is a 'MxI.$ISingleton' ?       true
+======== End of Unit Test ========
+```
+
+>Please notice in the previous output that an _implementation class_ may _inherit_ functions (i.e implementation of services from _interface classes_) from its parent class (e.g. `FlyingFish` inherits `IAnimal.run()` and `IAnimal.live()` from `Animal`) but it is also possible to _override_ these default implementations them as well.
 
 ## References
 * _A fresh look at JavaScript Mixins_  
