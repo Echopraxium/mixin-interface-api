@@ -1,6 +1,6 @@
 {
   "name": "mixin-interface-api",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Lightweight interface class API (Javascript es6)",
   "main": "main.js",
   "scripts": {
