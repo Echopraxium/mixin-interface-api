@@ -1,6 +1,6 @@
 {
   "name": "mixin-interface-api",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "description": "Lightweight interface class API (Javascript es6)",
   "main": "main.js",
   "scripts": {
@@ -27,6 +27,6 @@
   "dependencies": {
     "caller-id": "^0.1.0",
     "mixin": "^0.2.0",
-	"sprintf-js": "^1.1.1"
+    "sprintf-js": "^1.1.1"
   }
 }
