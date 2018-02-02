@@ -1,6 +1,20 @@
 # mixin-interface-api
 
-A lightweight _interface class_ API in Javascript An es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
+A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
+
+### Changelog in release 0.1.8
+This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
+ >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://github.com/serilog/serilog/wiki/Getting-Started#example-application).
+Now the _Log client_ sends a _trace request_ (`MxI.$Log.write()`), then the _trace message_ is eventually processed by being sent to a specific _target_ (e.g. _Console_, _File_, _Server_, _Database_, etc...). 
+The _sink(s)_ must be explicitly declared (`MxI.$Log.addSink()`) else the _trace request_ is not processed.  
+ >Notice that _sink_ classes must implement `MxI.$ILogger` but they are no more singletons.
+* Major refactoring of Log API: step 1/2 - move some classes from `mixin-interface` to `mixin-interface-api`
+  * `MxI.$ILogger` interface moved.
+  * `MxI.$DefaultLogger` implementation moved and renamed to `MxI.$ConsoleLogSink`.
+  * Implementation of _Log feature_ moved from `MxI.$System` class to `MxI.$Log` class. Please notice that the previous API (e.g. `MxI.$System.log()`) is still supported but is now _deprecated_.
+* Major refactoring of Log API: step 2/2 - New implementation classes in `mixin-interface-api`
+  * `MxI.$Log` is the new implementation of the _Log feature_ in which _trace requests_ are processed by _sink(s)_. A _sink_ redirects traces (`MxI.$Log.write()` calls) to specific target (e.g. `$ConsoleLogSink` redirects to the console). 
+  * `MxI.$FileLogSink` is a _sink_ which redirects traces (`MxI.$Log.write()` calls) to a file (e.g. `log.txt`)
 
 ### Changelog in release 0.1.6 
 * Documentation upgrade 1/2: UML model diagram for the implementation sample
@@ -90,11 +104,11 @@ class Animal extends MxI.$Implementation(MxI.$Object).$with(IAnimal) {
   } // 'Animal' constructor
 
   run() {
-    console.log("--> Animal.run");
+    MxI.$Log.write("--> Animal.run: '%d'", this);
   } // IAnimal.run()
 
   live() {
-    console.log("--> Animal.live");
+    MxI.$Log.write("--> Animal.live: '%d'", this);
   } // ILifeForm.live()
 } // 'Animal' class
 MxI.$setClass(Animal).$asImplementationOf(IAnimal, ILifeForm);
@@ -123,15 +137,15 @@ class Cat extends MxI.$Implementation(Animal).$with(IMammal) {
   } // 'Cat' constructor
 
   suckle() {
-    console.log('--> Cat.suckle');
+    MxI.$Log.write("--> Cat.suckle: '%d'", this);
   } // IMammal.suckle()
 
   __run() {
-    console.log('--> Cat.run');
+    MxI.$Log.write("--> Cat.run: '%d'", this);
   } // IAnimal.run()
 
   __live() {
-    console.log('--> Cat.live');
+    MxI.$Log.write("--> Cat.live: '%d'", this);
   } // ILifeForm.live()
 } // 'Cat' class
 MxI.$setClass(Cat).$asImplementationOf(IMammal);
@@ -181,6 +195,15 @@ Please note the following keywords and their meaning:
 * **MxI.$Null**: Singleton of `MxI.$NullObject` 
 * **MxI.$isNull()**: Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
  
+* **Log Feature**
+ >This feature was previously implemented by `MxI.$System` (in `mixin-interface` package) which is still supported but is now _deprecated_.
+  * **MxI.$Log.write(arg_msg, ...arg_values)**: new implementation of _trace requests_.  
+  * **MxI.$Log.banner(arg_msg, arg_single_line_banner, arg_separator_char, arg_separator_length)**: outputs `arg_msg` within a banner.
+  * **MxI.$Log.addSink(arg_sink)**: declares a _sink_ object (which must implement `$ILogger`).
+  * **MxI.$Log.getSinkCount()**: returns the number of _sinks_.   
+  * **MxI.$Log.clearSinks()**: deletes all the_sinks_.
+  * **MxI.$ConsoleLogSink**: default _sink_ implementation class (sends _trace messages_ to the console).
+  * **MxI.$FileLogSink**: default _sink_ implementation class (sends _trace messages_ to a file - e.g. `./log.txt`).
 ***
 ## Check if an object is an instance of a Type
 ```javascript
@@ -191,7 +214,7 @@ This service provides type-checking for an object (see `./test.js` for a unit te
 
 ```javascript
 var a_cat = new Cat();
-console.log(a_cat.name + " is a 'IMammal': " + MxI.$isInstanceOf(IMammal, a_cat));
+MxI.$Log.write(a_cat.name + " is a 'IMammal': " + MxI.$isInstanceOf(IMammal, a_cat));
 ```
 
 ***
@@ -202,7 +225,7 @@ MxI.$isInterface(type)
 This service checks if  `type` is an _interface class_ (see [`./test.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/test.js) for a unit test of this feature). The `type` argument is either an _implementation class_ or an _interface class_.
 
 ```javascript
-console.log("'IAnimal' is an interface ? " + MxI.$isInterface(IAnimal));
+MxI.$Log.write("'IAnimal' is an interface ? " + MxI.$isInterface(IAnimal));
 ```
 
 ***
@@ -287,12 +310,11 @@ Error: ** mixin-interface-api **
    Error code:  SERVICE_NOT_IMPLEMENTED
    Description: 'IAnimal.run' not found on 'animal_0'
 
-    at throwErrorMessage (D:\001_Lab\000_KL_Lab\_git_pub\mixin-interface-api\src
-\mixin_interface_api.js:27:11)
-    at Object.$raiseNotImplementedError (D:\001_Lab\000_KL_Lab\_git_pub\mixin-in
-terface-api\src\mixin_interface_api.js:41:9)
-    at Animal.run (D:\001_Lab\000_KL_Lab\_git_pub\mixin-interface-api\src\test_c
-lasses\i_animal.js:16:9)
+    at throwErrorMessage (D:\_Dev\NodeJS\github\mixin-interface-api\src\mixin_interface_api.js:31:11)
+    at Object.$raiseNotImplementedError (D:\_Dev\NodeJS\github\mixin-interface-api\src\mixin_interface_api.js:45:9)
+    at Animal.run (D:\_Dev\NodeJS\github\mixin-interface-api\src\test_classes\i_animal.js:16:9)
+    at Object.<anonymous> (D:\_Dev\NodeJS\github\mixin-interface-api\test.js:34:13)
+    ...
 ...
 ```
 
@@ -320,7 +342,7 @@ MxI.$setAsSingleton(implementation)
 
 Please find below a code sample from [`./test_.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/test.js) which uses `MxI.$isSingleton()`:
 ```javascript
-console.log("isSingleton(%s):  %s", MxI.$Null, MxI.$isSingleton(MxI.$Null));
+MxI.$Log.write("isSingleton(%s):  %s", MxI.$Null, MxI.$isSingleton(MxI.$Null));
 ```
 
 Please find below a code sample from [`./src/mixin_interface_api.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/src/mixin_interface_api.js) which uses `MxI.$setAsSingleton()`:
@@ -358,7 +380,7 @@ $setAsSingleton($NullObject);
 
 Please find below a code sample which both logs `MxI.$Null` singleton and calls `MxI.$isNull()`
 ```javascript
-console.log("MxI.$isNull(%s):   %s", MxI.$Null, MxI.$isNull(MxI.$Null));
+MxI.$Log.write("MxI.$isNull(%s):   %s", MxI.$Null, MxI.$isNull(MxI.$Null));
 ```
 
 > `MxI.$isNull()` Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
