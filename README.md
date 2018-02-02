@@ -2,9 +2,10 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-### Changelog in release 0.1.8
+### Changelog in release 0.1.9
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://github.com/serilog/serilog/wiki/Getting-Started#example-application).
+
 Now the _Log client_ sends a _trace request_ (`MxI.$Log.write()`), then the _trace message_ is eventually processed by being sent to a specific _target_ (e.g. _Console_, _File_, _Server_, _Database_, etc...). 
 The _sink(s)_ must be explicitly declared (`MxI.$Log.addSink()`) else the _trace request_ is not processed.  
  >Notice that _sink_ classes must implement `MxI.$ILogger` but they are no more singletons.
