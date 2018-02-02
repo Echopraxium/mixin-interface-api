@@ -458,35 +458,35 @@ const $isNull = function(obj) {
 } // $isNull
 
 //================================================================================
-//=========================  '$ILogger' interface class  =========================
+//=========================  '$ILogSink' interface class  =========================
 //================================================================================
-class $ILogger extends $Interface($IBaseInterface) {  
+class $ILogSink extends $Interface($IBaseInterface) {  
   // Fallback implementation of 'log' service
   log(arg_msg, ...arg_values) {
-	$raiseNotImplementedError($ILogger, this);
-  } // $ILogger.log()
+	$raiseNotImplementedError($ILogSink, this);
+  } // $ILogSink.log()
   
   // Fallback implementation of 'enable' service
   enable() {
-	$raiseNotImplementedError($ILogger, this);
-  } // $ILogger.enable(-)
+	$raiseNotImplementedError($ILogSink, this);
+  } // $ILogSink.enable(-)
   
   // Fallback implementation of 'disable' service
   disable() {
-	$raiseNotImplementedError($ILogger, this);
-  } // $ILogger.disable()
+	$raiseNotImplementedError($ILogSink, this);
+  } // $ILogSink.disable()
   
   // Fallback implementation of 'setPrefix' service
   setPrefix() {
-	$raiseNotImplementedError($ILogger, this);
-  } // $ILogger.setPrefix()
+	$raiseNotImplementedError($ILogSink, this);
+  } // $ILogSink.setPrefix()
   
   // Fallback implementation of 'getPrefix' service
   getPrefix() {
-	$raiseNotImplementedError($ILogger, this);
-  } // $ILogger.getPrefix()
-} // '$ILogger' interface class
-$setAsInterface($ILogger).$asChildOf($IBaseInterface);
+	$raiseNotImplementedError($ILogSink, this);
+  } // $ILogSink.getPrefix()
+} // '$ILogSink' interface class
+$setAsInterface($ILogSink).$asChildOf($IBaseInterface);
 
 
 //===========================================================================
@@ -498,7 +498,7 @@ class $Log {
 	    if (arg_sink === undefined) {
 		    return;
 	    }
-		else if (! $isInstanceOf($ILogger, arg_sink)) {
+		else if (! $isInstanceOf($ILogSink, arg_sink)) {
 			var error_msg =   "*** Error *** in '$Log.addSink()': '"
                 			+ arg_sink.name + "' is an invalid Logger object";
 			if ($Log._$sinks === undefined) {
@@ -609,7 +609,7 @@ $Log._$sinks;
 //================================================================================
 //=============================  '$ConsoleLogSink'  ==============================
 //================================================================================
-class $ConsoleLogSink extends $Implementation($Object).$with($ILogger) {
+class $ConsoleLogSink extends $Implementation($Object).$with($ILogSink) {
     constructor(...args) {
 	    super();
 	    //console.log(" >>> $ConsoleLogSink First time (and Only normally) in getSingleton");
@@ -635,37 +635,37 @@ class $ConsoleLogSink extends $Implementation($Object).$with($ILogger) {
 	      }
         }
 	    console.log(this._$prefix + msg);
-    } // $ILogger.log()
+    } // $ILogSink.log()
   
     enable() {
 		var klass = this.constructor;
 	    klass._$enabled = true;
-    } // $ILogger.enable()
+    } // $ILogSink.enable()
 	
 	disable() {
 		var klass = this.constructor;
 	    klass._$enabled = false;
-    } // $ILogger.disable()
+    } // $ILogSink.disable()
   
     setPrefix(arg_prefix) {
 	    var klass = this.constructor;
 	    klass._$prefix = arg_prefix;
-    } // $ILogger.setPrefix()
+    } // $ILogSink.setPrefix()
   
     getPrefix() {
 	    var klass = this.constructor;
 	    return klass._$prefix;
-    } // $ILogger.getPrefix()
+    } // $ILogSink.getPrefix()
 } // '$ConsoleLogger' class
 $ConsoleLogSink._$prefix    = "";
 $ConsoleLogSink._$enabled   = true;
-$setClass($ConsoleLogSink).$asImplementationOf( $ILogger );
+$setClass($ConsoleLogSink).$asImplementationOf( $ILogSink );
 
 
 //========================================--=====================================
 //===================== '$FileLogSink' implementation class =====================
 //==================================================--===========================
-class $FileLogSink extends $Implementation($Object).$with($ILogger) {
+class $FileLogSink extends $Implementation($Object).$with($ILogSink) {
     constructor(log_filepath) {
 	    super();
 	    if (log_filepath !== undefined  &&  log_filepath !== null)
@@ -697,9 +697,9 @@ class $FileLogSink extends $Implementation($Object).$with($ILogger) {
 	      }
         }
 	    this._log2file(msg);
-    } // $ILogger.log()
+    } // $ILogSink.log()
 } // '$FileLogSink' class
-$setClass($FileLogSink).$asImplementationOf($ILogger);
+$setClass($FileLogSink).$asImplementationOf($ILogSink);
 exports.$FileLogSink = $FileLogSink;
 
 
@@ -733,7 +733,7 @@ const MxI = {
 	'$isSingleton':              $isSingleton,
 	'$setAsSingleton':           $setAsSingleton,
 	
-	'$ILogger':                  $ILogger,
+	'$ILogSink':                  $ILogSink,
 	'$Log':                      $Log,
 	'$ConsoleLogSink':           $ConsoleLogSink,
 	'$FileLogSink':              $FileLogSink

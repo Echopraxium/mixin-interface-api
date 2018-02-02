@@ -2,18 +2,20 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-### Changelog in release 0.1.12
+### Changelog in release 0.1.16
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://serilog.net/).
 
 Now the _Log client_ sends a _trace request_ (`MxI.$Log.write()`), then the _trace message_ is eventually processed by being sent to a specific _target_ (e.g. _Console_, _File_, _Server_, _Database_, etc...). 
 The _sink(s)_ must be explicitly declared (`MxI.$Log.addSink()`) else the _trace request_ is not processed.  
- >Notice that _sink_ classes must implement `MxI.$ILogger` but they are no more singletons.
-* Major refactoring of Log API: step 1/2 - move some classes from `mixin-interface` to `mixin-interface-api`
-  * `MxI.$ILogger` interface moved.
+ >Notice that _sink_ classes must implement `MxI.$ILogSink` but they are no more singletons.
+
+ * Major refactoring of Log API: step 1/2 - move some classes from `mixin-interface` to `mixin-interface-api`
+  * `MxI.$ILogger` interface moved and renamed to `MxI.$ILogSink`.
   * `MxI.$DefaultLogger` implementation moved and renamed to `MxI.$ConsoleLogSink`.
   * Implementation of _Log feature_ moved from `MxI.$System` class to `MxI.$Log` class. Please notice that the previous API (e.g. `MxI.$System.log()`) is still supported but is now _deprecated_.
-* Major refactoring of Log API: step 2/2 - New implementation classes in `mixin-interface-api`
+
+  * Major refactoring of Log API: step 2/2 - New implementation classes in `mixin-interface-api`
   * `MxI.$Log` is the new implementation of the _Log feature_ in which _trace requests_ are processed by _sink(s)_. A _sink_ redirects traces (`MxI.$Log.write()` calls) to specific target (e.g. `$ConsoleLogSink` redirects to the console). 
   * `MxI.$FileLogSink` is a _sink_ which redirects traces (`MxI.$Log.write()` calls) to a file (e.g. `log.txt`)
 
@@ -198,9 +200,10 @@ Please note the following keywords and their meaning:
  
 * **Log Feature**
  >This feature was previously implemented by `MxI.$System` (in `mixin-interface` package). `MxI.$System` still supports the previous implementation but is now _deprecated_.
+  * **MxI.$ILogSink**: interface class for a _sink_ (implementation of the Log feature).
   * **MxI.$Log.write(arg_msg, ...arg_values)**: new implementation of _trace requests_.  
   * **MxI.$Log.banner()**: outputs `arg_msg` within a banner.
-  * **MxI.$Log.addSink()**: declares a _sink_ object (which must implement `$ILogger`).
+  * **MxI.$Log.addSink()**: declares a _sink_ object (which must implement `$ILogSink`).
   * **MxI.$Log.getSinkCount()**: returns the number of _sinks_.   
   * **MxI.$Log.clearSinks()**: deletes all the _sinks_.
   * **MxI.$ConsoleLogSink**: default _sink_ implementation class (sends _trace messages_ to the console).
