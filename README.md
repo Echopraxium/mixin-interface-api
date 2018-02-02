@@ -2,7 +2,7 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-### Changelog in release 0.1.11
+### Changelog in release 0.1.12
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://serilog.net/).
 
@@ -440,7 +440,7 @@ You should get this kind of output (please find [here](https://github.com/Echopr
 >Please notice in the previous output that an _implementation class_ may _inherit_ functions (i.e implementation of services from _interface classes_) from its parent class (e.g. `FlyingFish` inherits `IAnimal.run()` and `IAnimal.live()` from `Animal`) but it is also possible to _override_ these default implementations them as well.
 
 ## References
-* _API Design: Avoid Logging in your APIs_ 
+* _API Design: Avoid Logging in your APIs_  
   http://tutorials.jenkov.com/api-design/avoid-logging.html
 * _A fresh look at JavaScript Mixins_  
   https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
