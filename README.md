@@ -2,7 +2,7 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-### Changelog in release 0.1.9
+### Changelog in release 0.1.10
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://github.com/serilog/serilog/wiki/Getting-Started#example-application).
 
@@ -197,12 +197,12 @@ Please note the following keywords and their meaning:
 * **MxI.$isNull()**: Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
  
 * **Log Feature**
- >This feature was previously implemented by `MxI.$System` (in `mixin-interface` package) which is still supported but is now _deprecated_.
+ >This feature was previously implemented by `MxI.$System` (in `mixin-interface` package). `MxI.$System` still supports the previous implementation but is now _deprecated_.
   * **MxI.$Log.write(arg_msg, ...arg_values)**: new implementation of _trace requests_.  
-  * **MxI.$Log.banner(arg_msg, arg_single_line_banner, arg_separator_char, arg_separator_length)**: outputs `arg_msg` within a banner.
-  * **MxI.$Log.addSink(arg_sink)**: declares a _sink_ object (which must implement `$ILogger`).
+  * **MxI.$Log.banner()**: outputs `arg_msg` within a banner.
+  * **MxI.$Log.addSink()**: declares a _sink_ object (which must implement `$ILogger`).
   * **MxI.$Log.getSinkCount()**: returns the number of _sinks_.   
-  * **MxI.$Log.clearSinks()**: deletes all the_sinks_.
+  * **MxI.$Log.clearSinks()**: deletes all the _sinks_.
   * **MxI.$ConsoleLogSink**: default _sink_ implementation class (sends _trace messages_ to the console).
   * **MxI.$FileLogSink**: default _sink_ implementation class (sends _trace messages_ to a file - e.g. `./log.txt`).
 ***
@@ -410,7 +410,7 @@ Now enter the following command:
 node test.js
 ```
 
-You should get the following output:
+You should get this kind of output (please find [here](https://github.com/Echopraxium/mixin-interface-api/blob/master/log.txt) the full output):
 ```bash
 =============================================================
 ======== Unit Test for 'mixin-interface-api' package ========
@@ -434,50 +434,7 @@ You should get the following output:
 --> Animal.run
 --> Cat.suckle
 --> Animal.live
-----------
-3. Check for each type if it is an Interface class or an Implementation class
-'MxI.$Object'        is an interface ? false
-'MxI.IBaseInterface' is an interface ? true
-'ILifeForm'          is an interface ? true
-'IAnimal'            is an interface ? true
-'Animal'             is an interface ? false
-'Cat'                is an interface ? false
-'IMammal'            is an interface ? true
-----------
-4. Check if an Implementation class implements a given Interface
-'Animal'              implements 'ILifeForm' ?        true
-'Animal'              implements 'IAnimal' ?          true
-'Animal'              implements 'IMammal' ?          false
-'Cat'                 implements 'IAnimal' ?          true
-'Cat'                 implements 'IMammal' ?          true
-'MxI.$NullObject'     implements 'MxI.$INullObject' ? true
-'MxI.$NullObject'     implements 'MxI.$ISingleton' ?  true
-----------
-5. get Superclass of a type
-Superclass of 'ILifeForm' is:             $IBaseInterface
-Superclass of 'Animal' is:                $Object
-Superclass of 'IAnimal' is:               ILifeForm
-Superclass of 'Cat' is:                   Animal
-----------
-6. Check generated names for instances
-Instance of 'MxI.$Object' created:        'mxi_object_0'
-Another instance of 'Animal' created:     'animal_1'
-Another instance of 'Cat' created:        'cat_1'
-----------
-7. Initialize instance
-animal_1 isInitialized():                 false
-animal_1 isInitialized():                 true
-----------
-8. 'Null Object' design pattern, check if an instance is 'MxI.NULL'
-MxI.$isNull(undefined):                   true
-MxI.$isNull(animal_1):                    false
-MxI.$isNull(MxI.NULL):                    true
-MxI.$NullObject.getSingleton():           MxI.NULL
-----------
-9. Singleton
-isSingleton(MxI.NULL):                    true
-'MxI.NULL' is a 'MxI.$ISingleton' ?       true
-======== End of Unit Test ========
+...
 ```
 
 >Please notice in the previous output that an _implementation class_ may _inherit_ functions (i.e implementation of services from _interface classes_) from its parent class (e.g. `FlyingFish` inherits `IAnimal.run()` and `IAnimal.live()` from `Animal`) but it is also possible to _override_ these default implementations them as well.
