@@ -2,7 +2,7 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-## Release 0.1.28 changelog
+## Release 0.1.29 changelog
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://serilog.net/).
 
@@ -201,10 +201,10 @@ Please note the following keywords and their meaning:
 * **MxI.$isNull()**: Returns `true` in 2 cases. The first is when the input value is an object which is both a _Null Object_ an a _Singleton_ (typically the 'default Null Object' which is `MxI.$Null`). The second case is when the input value is `undefined`
  
 * **Log Feature**
- >This feature was previously implemented by `MxI.$System` (in `mixin-interface` package). `MxI.$System` still supports the previous implementation but is now _deprecated_.
-  * **MxI.$ILogSink**: interface class for a _sink_ (implementation of the Log feature).
-  * **MxI.$Log.write(arg_msg, ...arg_values)**: new implementation of _trace requests_.  
-  * **MxI.$Log.banner()**: outputs `arg_msg` within a banner.
+ >This feature was previously provided as an extension (`MxI.$System`, provided by `mixin-interface`). `MxI.$System` still supports the previous implementation but is now _deprecated_.
+  * **MxI.$ILogSink**: interface class for a _sink_ (implementation of the _Log feature_, previously called _Logger_).
+  * **MxI.$Log.write()**: new implementation of _trace requests_ (previously `MxI.$System.log()`).  
+  * **MxI.$Log.banner()**: outputs a message within a banner.
   * **MxI.$Log.addSink()**: declares a _sink_ object (which must implement `$ILogSink`).
   * **MxI.$Log.getSinkCount()**: returns the number of _sinks_.   
   * **MxI.$Log.clearSinks()**: deletes all the _sinks_.
@@ -393,7 +393,7 @@ MxI.$Log.write("MxI.$isNull(%s):   %s", MxI.$Null, MxI.$isNull(MxI.$Null));
 
 
 ## Installation and Usage
-```bash
+```
 npm install mixin-interface-api -S
 ```
 
@@ -403,7 +403,7 @@ Install [_NodeJS_](https://nodejs.org/en/) and [_Git_](https://git-scm.com/)
 
 #### Step 2: Clone the 'mixin-interface-api' repository locally
 Open a command shell then enter the following commands:
-```bash
+```
 git clone git://github.com/Echopraxium/mixin-interface-api
 cd mixin-interface-api
 npm update
@@ -411,7 +411,7 @@ npm update
 
 #### Step 3: Run the Unit Test
 Now enter the following command:
-```bash
+```
 node test.js
 ```
 
