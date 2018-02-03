@@ -2,7 +2,7 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-## Release 0.1.30 changelog
+## Release 0.1.31 changelog
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://serilog.net/).
 
@@ -402,11 +402,10 @@ npm install mixin-interface-api -S
 Install [_NodeJS_](https://nodejs.org/en/) and [_Git_](https://git-scm.com/)
 
 #### Step 2: Clone the 'mixin-interface-api' repository locally
-Open a command shell then enter the following commands:```
-git clone git://github.com/Echopraxium/mixin-interface-api
+Open a command shell then enter the following commands:
+```git clone git://github.com/Echopraxium/mixin-interface-api
 cd mixin-interface-api
-npm update
-```
+npm update```
 
 #### Step 3: Run the Unit Test
 Now enter the following command:
