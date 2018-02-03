@@ -2,7 +2,7 @@
 
 A lightweight _interface class_ API in Javascript es6 (ECMAScript 2015). It is implementated with `mixins`, Type checking and inheritance are supported.
 
-### Changelog in release 0.1.27
+## Release 0.1.28 changelog
 This release brings a much better and modern implementation of the _Log feature_ with the _sink metaphor_. 
  >This idea is neither new nor mine but I thought that it would be very nice to have. You're welcome to read [this article](http://tutorials.jenkov.com/api-design/avoid-logging.html) and take a look at the [Serilog library](https://serilog.net/).
 
@@ -14,13 +14,12 @@ The _sink(s)_ must be explicitly declared (`MxI.$Log.addSink()`) else the _trace
   * `MxI.$ILogger` interface moved and renamed to `MxI.$ILogSink`.
   * `MxI.$DefaultLogger` implementation moved and renamed to `MxI.$ConsoleLogSink`.
   * Implementation of _Log feature_ moved from `MxI.$System` class to `MxI.$Log` class. Please notice that the previous API (e.g. `MxI.$System.log()`) is still supported but is now _deprecated_.  
-
-  
+<br>
 * Major refactoring of Log API: step 2/2 - New implementation classes in `mixin-interface-api`  
   * `MxI.$Log` is the new implementation of the _Log feature_ in which _trace requests_ are processed by _sink(s)_. A _sink_ redirects traces (`MxI.$Log.write()` calls) to specific target (e.g. `$ConsoleLogSink` redirects to the console). 
   * `MxI.$FileLogSink` is a _sink_ which redirects traces (`MxI.$Log.write()` calls) to a file (e.g. `log.txt`).  
 
-### Changelog in release 0.1.6 
+## Release 0.1.6 changelog
 * Documentation upgrade 1/2: UML model diagram for the implementation sample
 * Documentation upgrade 2/2: Paragraphs reordering ( _Sample UML Model_, "howtos" i.e _How to Define an Interface class_ and _Core API Reference_ are now before _Installation and Usage_ and _How to run the Unit Test_)
 
@@ -155,9 +154,9 @@ class Cat extends MxI.$Implementation(Animal).$with(IMammal) {
 MxI.$setClass(Cat).$asImplementationOf(IMammal);
 ```
 >Notice that `IAnimal.run()` and `ILifeForm.live()` services are not provided, so they are inherited from the parent _implementation class_ (`Animal`).
+<br><br>
 
-- - - -
-# Core API Reference
+# API Reference - Foreword
 
 Please note the following keywords and their meaning: 
   
@@ -171,6 +170,8 @@ Please note the following keywords and their meaning:
 > **implementation**: _implementation class_  
 > **super_implementation**: _superclass of the implementation class_   
 > **...interfaces**: _list of implemented interfaces_. The list is provided as _interface class(es)_ separated by a comma (e.g. `ILifeForm` and `IAnimal, ILifeForm` are valid _...interfaces_ arguments)  
+
+# Core API reference
 
 * **MxI.$isInstanceOf()**: replacement for javascript `instanceof` operator  
 * **MxI.$isInterface()**: checks if a _type_ is an _interface class_ or not  
@@ -307,7 +308,7 @@ MxI.$setAsInterface(ILifeForm).$asChildOf(MxI.$IBaseInterface);
 
 Let's see what happens if the `Animal` _implementation_ doesn't provide an implementation for the `run()` service §defined by `IAnimal` _interface class_). 
 If you want to test this use case, just rename `run()` to `__run()` in [`./src/test_classes/animal.js`](https://github.com/Echopraxium/mixin-interface-api/blob/master/src/test_classes/animal.js) ), then restart the Unit Test with `node test.js` in the command shell. An exception should be raised an you would get the following output:
-```bash
+```
     throw new Error(error_msg);
     ^
 
@@ -415,7 +416,7 @@ node test.js
 ```
 
 You should get this kind of output (please find [here](https://github.com/Echopraxium/mixin-interface-api/blob/master/log.txt) the full output):
-```bash
+```
 =============================================================
 ======== Unit Test for 'mixin-interface-api' package ========
 =============================================================
